@@ -1,34 +1,69 @@
 ﻿using AnyCompany.Models;
+using AnyCompany.Providers;
 using System;
+using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace AnyCompany.Repositories
 {
     public static class CustomerRepository
     {
-        private static string ConnectionString = @"Data Source=(local);Database=Customers;User Id=admin;Password=password;";
-
-        public static Customer Load(int customerId)
+        public static Customer CreateCustomer(Customer customer)
         {
-            Customer customer = new Customer();
-
-            SqlConnection connection = new SqlConnection(ConnectionString);
-            connection.Open();
-
-            SqlCommand command = new SqlCommand("SELECT * FROM Customer WHERE CustomerId = " + customerId,
-                connection);
-            var reader = command.ExecuteReader();
-
-            while (reader.Read())
+            try
             {
-                customer.Name = reader["Name"].ToString();
-                customer.DateOfBirth = DateTime.Parse(reader["DateOfBirth"].ToString());
-                customer.Country = reader["Country"].ToString();
+                using (DbProvider dbProvider = new DbProvider())
+                {
+                    dbProvider.Customers.Add(customer);;
+                    dbProvider.SaveChanges();
+
+                    return dbProvider.Customers.First(x => x.CustomerId == customer.CustomerId) ?? null;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Add logging here in this case
             }
 
-            connection.Close();
+            return null;
+        }
 
-            return customer;
+        public static List<Customer> GetAllCustomers()
+        {
+            try
+            {
+                using (DbProvider dbProvider = new DbProvider())
+                {
+                    return dbProvider.Customers.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Add logging here in this case
+            }
+
+            return null;
+        }
+
+        public static Customer GetCustomer(int customerId)
+        {
+
+            try
+            {
+                using (DbProvider dbProvider = new DbProvider())
+                {
+                    return dbProvider.Customers.First(x => x.CustomerId == customerId) ?? null;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Add logging here in this case
+            }
+
+            return null;
         }
     }
 }

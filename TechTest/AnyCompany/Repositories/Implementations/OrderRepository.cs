@@ -1,29 +1,48 @@
 ﻿using AnyCompany.Models;
-using AnyCompany.Repositories.Interfaces;
-using System.Data.SqlClient;
+using AnyCompany.Providers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AnyCompany.Repositories
 {
-    internal class OrderRepository : IOrderRepository
+    public class OrderRepository
     {
-        private static readonly string ConnectionString = @"Data Source=(local);Database=Orders;User Id=admin;Password=password;";
-
-        public bool Save(Order order)
+        public static bool Save(Order order)
         {
-            SqlConnection connection = new SqlConnection(ConnectionString);
-            connection.Open();
+            try
+            {
+                using (DbProvider dbProvider = new DbProvider())
+                {
+                    dbProvider.Orders.Add(order);
+                    dbProvider.SaveChanges();
 
-            SqlCommand command = new SqlCommand("INSERT INTO Orders VALUES (@OrderId, @Amount, @VAT)", connection);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Add logging here in this case
+            }
 
-            command.Parameters.AddWithValue("@OrderId", order.OrderId);
-            command.Parameters.AddWithValue("@Amount", order.Amount);
-            command.Parameters.AddWithValue("@VAT", order.VAT);
+            return false;
+        }
 
-            command.ExecuteNonQuery();
+        public static List<Order> GetAllOrders(int customerId)
+        {
+            try
+            {
+                using (DbProvider dbProvider = new DbProvider())
+                {
+                    return dbProvider.Orders.Where(x => x.CustomerId == customerId).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Add logging here in this case
+            }
 
-            connection.Close();
-
-            return true;
+            return null;
         }
     }
 }
