@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AnyCompany.Tests
 {
-    public class Class1
+    class OrderServiceTest
     {
     }
 }

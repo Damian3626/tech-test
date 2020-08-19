@@ -1,12 +1,14 @@
-﻿using System.Data.SqlClient;
+﻿using AnyCompany.Models;
+using AnyCompany.Repositories.Interfaces;
+using System.Data.SqlClient;
 
-namespace AnyCompany
+namespace AnyCompany.Repositories
 {
-    internal class OrderRepository
+    internal class OrderRepository : IOrderRepository
     {
-        private static string ConnectionString = @"Data Source=(local);Database=Orders;User Id=admin;Password=password;";
+        private static readonly string ConnectionString = @"Data Source=(local);Database=Orders;User Id=admin;Password=password;";
 
-        public void Save(Order order)
+        public bool Save(Order order)
         {
             SqlConnection connection = new SqlConnection(ConnectionString);
             connection.Open();
@@ -20,6 +22,8 @@ namespace AnyCompany
             command.ExecuteNonQuery();
 
             connection.Close();
+
+            return true;
         }
     }
 }
