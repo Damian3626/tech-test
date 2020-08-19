@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Investec Bank")]
 [assembly: AssemblyProduct("AnyCompany")]
-[assembly: AssemblyCopyright("Copyright © Investec Bank 2018")]
+[assembly: AssemblyCopyright("Copyright © Investec Bank 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
